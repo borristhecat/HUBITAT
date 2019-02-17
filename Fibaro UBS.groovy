@@ -5,7 +5,7 @@
   *  File Name:			Fibaro UBS - Dual Contact and Temperature Sensor.groovy
   *	Initial Release:	2017-11-07
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
-  *	17/2/2019  rebuilt all logging and altered temperature creation by Borristhecat
+  *	17/2/2019  rebuilt all logging, altered temperature creation and fixed typo bugs by Borristhecat
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.
@@ -205,7 +205,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: motionstate)
-             childDevice.sendEvent(name: "contact", value: currentstate)
+            childDevice.sendEvent(name: "contact", value: currentstate)
           if (txtEnable) log.info "Fibaro is ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
@@ -340,8 +340,8 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevie)
-         	childDevicesendEvent(name: "motion", value: "inactive")
-             childDevie.sendEvent(name: "contact", value: "open")
+         	childDevice.sendEvent(name: "motion", value: "inactive")
+            childDevice.sendEvent(name: "contact", value: "open")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
@@ -354,7 +354,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: "active")
-             childDevice.sendEvent(name: "contact", value: "closed")
+            childDevice.sendEvent(name: "contact", value: "closed")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
@@ -367,7 +367,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: "inactive")
-             childDevice.sendEvent(name: "contact", value: "open")
+            childDevice.sendEvent(name: "contact", value: "open")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }

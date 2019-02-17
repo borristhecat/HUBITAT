@@ -5,7 +5,7 @@
   *  File Name:			Fibaro UBS - Dual Contact and Temperature Sensor.groovy
   *	Initial Release:	2017-11-07
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
-  *	17/2/2019  rebuilt all logging and altered temperature creation by Borristhecat.
+  *	17/2/2019  rebuilt all logging and altered temperature creation by Borristhecat
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.
@@ -20,7 +20,7 @@
   	capability "Motion Sensor"
      capability "Sensor"
  	capability "Temperature Measurement"
-     capability "Configuration"
+     //capability "Configuration"
  	//capability "Polling"
  	capability "Refresh"
      
@@ -43,7 +43,7 @@
  details(["contact1","contact2",
  		"temp1text", "temperature1", "temp2text", "temperature2",
          "temp3text", "temperature3", "temp4text", "temperature4",
-         "configure", "report", "createchildren", "createtempchildren", "removechildren"])
+         "report", "createchildren", "createtempchildren", "removechildren"])
  
  preferences {
         //standard logging options
@@ -87,20 +87,16 @@ def refresh() {
      removeChildDevices()
  }
  
- def configure() {
- 	if (txtEnable) log.info "configure()"
-     updateCurrentParams()
- }
- 
+
  def createChildDevices(){
  	if (txtEnable) log.info "Adding Child Devices if not already added"
      for (i in 1..2) {
      	try {
          	if (txtEnable) log.info "Trying to create child switch if it doesn't already exist ${i}"
-             def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep${i}"}
+             def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${i}"}
              if (currentchild == null) {
-            if (txtEnable) log.info "Creating child for ep${i}"
-                 addChildDevice("hubitat", "Virtual Contact Sensor", "${device.deviceNetworkId}-ep${i}", [name: "${device.displayName} (Contact${i})", isComponent: true])
+            if (txtEnable) log.info "Creating child for IP${i}"
+                 addChildDevice("hubitat", "Virtual Contact Sensor", "${device.deviceNetworkId}-IP${i}", [name: "${device.displayName} (Contact${i})", isComponent: true])
  			
              }
          } catch (e) {
@@ -113,42 +109,42 @@ def refresh() {
 		case 1:
 		 	 for (i in 1) {
 		if (txtEnable) log.info "Creating 1 Temperature child" 
-                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-temperature${i}"}
+                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-TP${i}"}
               		if (currentchild == null) {
-                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-temperature${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
+                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-TP${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
 					}
 		}
 		break
 		case 2:
 		 	for (i in 1..2) {
-		if (txtEnable) log.info "Creating 2 Temperature childs" 
-                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-temperature${i}"}
+		if (txtEnable) log.info "Creating 2 Temperature child's" 
+                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-TP${i}"}
               		if (currentchild == null) {
-                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-temperature${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
+                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-TP${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
 				}
 				}
 		 break
 		 case 3:
 		 	for (i in 1..3) {
-		if (txtEnable) log.info "Creating 3 Temperature childs" 
-                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-temperature${i}"}
+		if (txtEnable) log.info "Creating 3 Temperature child's" 
+                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-TP${i}"}
               		if (currentchild == null) {
-                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-temperature${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
+                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-TP${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
 				}
 				}
 		 break
 		 case 4:
 		 	for (i in 1..4) {
-		if (txtEnable) log.info "Creating 4 Temperature childs" 
-                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-temperature${i}"}
+		if (txtEnable) log.info "Creating 4 Temperature child's" 
+                    def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-TP${i}"}
               		if (currentchild == null) {
-                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-temperature${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
+                    addChildDevice("hubitat", "Virtual Temperature Sensor", "${device.deviceNetworkId}-TP${i}", [name: "${device.displayName} (Temp${i})", isComponent: true])
 				}
 				}
 		 break
 		 case 0:
 		 	
-		 if (txtEnable) log.info "Not creating any Temperature children" 
+		 if (txtEnable) log.info "Not creating any Temperature children as value is set to 0" 
            
 		 break
 	 }  	
@@ -160,11 +156,11 @@ def refresh() {
          	try {
              	deleteChildDevice(it.deviceNetworkId)
              } catch (e) {
-          if (logEnable) log.debug "Error deleting ${it.deviceNetworkId}, probably locked into a SmartApp: ${e}"
+          log.debug "Error deleting ${it.deviceNetworkId}, probably locked into a SmartApp: ${e}"
              }
          }
      } catch (err) {
-       if (logEnable) log.debug "Either no children exist or error finding child devices for some reason: ${err}"
+       log.debug "Either no children exist or error finding child devices for some reason: ${err}"
      }
  }
  
@@ -204,9 +200,9 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
      	currentstate = "closed"
          motionstate = "active"
  	}
-     createEvent(name: "contact1", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}")
+     createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep1"}
+         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: motionstate)
              childDevice.sendEvent(name: "contact", value: currentstate)
@@ -230,12 +226,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          	currentstate = "open"
              motionstate = "inactive"
  		}
-     if (logEnable) log.debug "ep${cmd.sourceEndPoint} is ${currentstate}"
+     if (txtEnable) log.info "IP${cmd.sourceEndPoint} is ${currentstate}"
          //First update tile on this device
-         sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - ep${cmd.sourceEndPoint} is ${currentstate}")
- 		//If not null then we have found either ep1 or ep2, hence try to send to the child device aswell
+         sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}")
+ 		//If not null then we have found either IP1 or IP2, hence try to send to the child device aswell
          try {
-             def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep${cmd.sourceEndPoint}"}
+             def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
                  childDevice.sendEvent(name: "motion", value: motionstate)
                  childDevice.sendEvent(name: "contact", value: currentstate)
@@ -246,7 +242,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  	else if (cmd.commandClass == 49) {
  		if ((cmd.sourceEndPoint >= 3) && (cmd.sourceEndPoint <= 6)) { 
  			def tempsensorid = cmd.sourceEndPoint - 2
- 			def tempendpoint = "temperature" + tempsensorid.toString()
+ 			def tempendpoint = "TP" + tempsensorid.toString()
              def tempval = ((cmd.parameter[4] * 256) + cmd.parameter[5])
              if (tempval > 32767) {
              	//Here we deal with negative values
@@ -296,7 +292,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  			// temperature
  			def cmdScale = cmd.scale == 1 ? "F" : "C"
  			def tempval = convertTemperatureIfNeeded(cmd.scaledSensorValue, cmdScale, cmd.precision).toDouble().round(1)
-             sendEvent(name: "temperature1", value: tempval, displayed: false) //unit: getTemperatureScale()
+             sendEvent(name: "TP1", value: tempval, displayed: false) //unit: getTemperatureScale()
  			break;
  	}
   if (logEnable) log.debug map
@@ -341,7 +337,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  def open1() {
      sendEvent(name: "contact1", value: "open", descriptionText: "$device.displayName (1) is opened manually")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep1"}
+         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevie)
          	childDevicesendEvent(name: "motion", value: "inactive")
@@ -354,7 +350,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  def close1() {
      sendEvent(name: "contact1", value: "closed", descriptionText: "$device.displayName (1) is closed manually")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep1"}
+         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: "active")
@@ -367,7 +363,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  def open2() {
      sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName (2) is opened manually")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep2"}
+         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: "inactive")
@@ -380,7 +376,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  def close2() {
      sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName (2) is closed manually")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-ep2"}
+         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: "active")
@@ -393,10 +389,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
 //capture preference changes
 def updated() {
 	log.info "updated..."
-	log.info "Dont forget to press the button to send config to the device"
-     //configure()
-     //createChildDevices()
-    log.warn "debug logging is: ${logEnable == true}"
+	log.warn "debug logging is: ${logEnable == true}"
     log.warn "description logging is: ${txtEnable == true}"
     if (logEnable) runIn(1800,logsOff)
 

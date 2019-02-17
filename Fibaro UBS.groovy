@@ -96,7 +96,7 @@ def refresh() {
              def currentchild = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${i}"}
              if (currentchild == null) {
             if (txtEnable) log.info "Creating child for IP${i}"
-                 addChildDevice("hubitat", "Virtual Contact Sensor", "${device.deviceNetworkId}-IP${i}", [name: "${device.displayName} (Contact${i})", isComponent: true])
+                 addChildDevice("hubitat", "Virtual Contact Sensor", "${device.deviceNetworkId}-IP${i}", [name: "${device.displayName} (Contact${i})", isComponent: false])
  			
              }
          } catch (e) {

@@ -5,7 +5,7 @@
   *  File Name:			Fibaro UBS - Dual Contact and Temperature Sensor.groovy
   *	Initial Release:	2017-11-07
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
-  *	17/2/2019  rebuilt all logging and altered temperature creation by Borristhecat
+  *	17/2/2019  rebuilt all logging and altered temperature creation by Borristhecat.
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.

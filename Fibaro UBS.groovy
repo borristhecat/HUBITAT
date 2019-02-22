@@ -213,7 +213,7 @@ def refresh() {
      removeChildDevices()
  }
  def configure() {
-	log.debug "configure()"
+	if (txtEnable) log.info "configure()"
     updateCurrentParams()
 }
  
@@ -548,4 +548,4 @@ def updated() {
 	if (settingEnable) runIn(1800,logsOff)
 
     def cmds = []
-}	
+}

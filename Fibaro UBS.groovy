@@ -16,22 +16,23 @@
  metadata {
  	definition (name: "Fibaro UBS", namespace: "cjcharles0", author: "Chris Charles") {
      
-     capability "Contact Sensor"
+    capability "Contact Sensor"
   	capability "Motion Sensor"
-     capability "Sensor"
+    capability "Sensor"
  	capability "Temperature Measurement"
-     //capability "Configuration"
+    capability "Configuration"
  	//capability "Polling"
  	capability "Refresh"
      
-     command "removeChildDevices"
-     command "createChildDevices"
-     command "createChildTempDevices"
-     command "listCurrentParams"
-     command "open1"
-     command "open2"
-     command "close1"
-     command "close2"
+    command "removeChildDevices"
+    command "createChildDevices"
+    command "createChildTempDevices"
+	command "updateCurrentParams"
+    command "listCurrentParams"
+    command "open1"
+    command "open2"
+    command "close1"
+    command "close2"
      
      attribute "contact1","enum",["open1","close1"]
      attribute "contact2","enum",["open2","close2"]
@@ -43,14 +44,139 @@
  details(["contact1","contact2",
  		"temp1text", "temperature1", "temp2text", "temperature2",
          "temp3text", "temperature3", "temp4text", "temperature4",
-         "report", "createchildren", "createtempchildren", "removechildren"])
+         "configure", "report", "createchildren", "createtempchildren", "removechildren"])
  
  preferences {
         //standard logging options
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: true
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
+		input name: "settingEnable", type: "bool", title: "Enable setting", defaultValue: false
 	 	input name: "Temps", type: "number", range: "0..4", required: true, defaultValue: "0",
             title: "Temperature probes number. \n" +
+                   "Default value: 0."
+	// input name: "Info", type: "paragraph", title:"Device Handler by @cjcharles", description: "Parameter Settings:", displayDuringSetup: false
+
+    	   
+       if (settingEnable) input name: "param1", type: "number", range: "0..65535", required: true, defaultValue: "0",
+            title: "Parameter No. 1 - Input 1 Alarm Cancellation Delay. \n" +
+                   "Additional delay after an alarm from input 1 has ceased.\n" +
+                   "Time in seconds to delay the ceasing event.\n" +
+                   "Default value: 0."
+       
+       if (settingEnable) input name: "param2", type: "number", range: "0..65535", required: true, defaultValue: "0",
+            title: "Parameter No. 2 - Input 2 Alarm Cancellation Delay. \n" +
+                   "Additional delay after an alarm from input 2 has ceased.\n" +
+                   "Time in seconds to delay the ceasing event.\n" +
+                   "Default value: 0."
+       
+       if (settingEnable) input name: "param3", type: "number", range: "0..3", required: true, defaultValue: "1",
+            title: "Parameter No. 3 - Type of Input No 1." +
+                   "Available settings:\n" +
+                   "0 – INPUT_NO (Normal Open)\n" +
+				   "1 – INPUT_NC (Normal Close)\n" +
+				   "2 – INPUT_MONOSTABLE\n" +
+				   "3 – INPUT_BISTABLE\n" +
+                   "Default value: 1."
+
+	if (settingEnable) input name: "param4", type: "number", range: "0..3", required: true, defaultValue: "1",
+            title: "Parameter No. 4 - Type of Input No 2." +
+                   "Available settings:\n" +
+                   "0 – INPUT_NO (Normal Open)\n" +
+				   "1 – INPUT_NC (Normal Close)\n" +
+				   "2 – INPUT_MONOSTABLE\n" +
+				   "3 – INPUT_BISTABLE\n" +
+                   "Default value: 1."
+
+	if (settingEnable) input name: "param5", type: "number", range: "0..255", required: true, defaultValue: "255",
+            title: "Parameter No. 5 - Type of transmitted control or alarm frame for association group 1." +
+                   "Available settings:\n" +
+				   "0 – Frame ALARM GENERIC\n" +
+				   "1 – Frame ALARM SMOKE\n" +
+				   "2 – Frame ALARM CO\n" +
+				   "3 – Frame ALARM CO2\n" +
+				   "4 – Frame ALARM HEAT\n" +
+				   "5 – Frame ALARM WATER\n" +
+				   "255 – Control frame BASIC_SET\n" +
+                   "Default value: 255."
+
+	if (settingEnable) input name: "param6", type: "number", range: "0..255", required: true, defaultValue: "255",
+            title: "Parameter No. 6 - Type of transmitted control or alarm frame for association group 2." +
+                   "Available settings:\n" +
+				   "0 – Frame ALARM GENERIC\n" +
+				   "1 – Frame ALARM SMOKE\n" +
+				   "2 – Frame ALARM CO\n" +
+				   "3 – Frame ALARM CO2\n" +
+				   "4 – Frame ALARM HEAT\n" +
+				   "5 – Frame ALARM WATER\n" +
+				   "255 – Control frame BASIC_SET\n" +
+                   "Default value: 255."
+
+	if (settingEnable) input name: "param7", type: "number", range: "0..255", required: true, defaultValue: "255",
+            title: "Parameter No. 7 - Value of the parameter specifying the forced level of dimming / opening sun blinds when " +
+            	   "sent a “switch on” / ”open” command from association group no. 1.\n" +
+                   "Available settings:\n" +
+                   "0-99 - Dimming or Opening Percentage\n" +
+                   "255 - Last set percentage\n" +
+                   "Default value: 255."
+
+	if (settingEnable) input name: "param8", type: "number", range: "0..255", required: true, defaultValue: "255",
+            title: "Parameter No. 8 - Value of the parameter specifying the forced level of dimming / opening sun blinds when " +
+            	   "sent a “switch on” / ”open” command from association group no. 2.\n" +
+                   "Available settings:\n" +
+                   "0-99 - Dimming or Opening Percentage\n" +
+                   "255 - Last set percentage\n" +
+                   "Default value: 255."
+
+	if (settingEnable) input name: "param9", type: "number", range: "0..3", required: true, defaultValue: "0",
+            title: "Parameter No. 9 - Deactivating transmission of the frame cancelling the alarm or the " +
+				   "control frame deactivating the device (Basic). Disable the alarm cancellation function.\n" +
+                   "Available settings:\n" +
+                   "0 – Cancellation sent for association group 1 and 2\n" +
+				   "1 – Cancellation sent for association group 1 only\n" +
+				   "2 – Cancellation sent for association group 2 only\n" +
+				   "3 - Not sent for association group 1 or 2\n" +
+                   "Default value: 0."
+
+	if (settingEnable) input name: "param10", type: "number", range: "1..255", required: true, defaultValue: "20",
+            title: "Parameter No. 10 - Interval between successive readings of temperature from all " +
+				   "sensors connected to the device. (A reading does not result in sending to ST)\n" +
+                   "Available settings:\n" +
+                   "1-255 - Seconds between readings\n" +
+                   "Default value: 20."
+
+	if (settingEnable) input name: "param11", type: "number", range: "0..255", required: true, defaultValue: "200",
+            title: "Parameter No. 11 - Interval between forcing to send report of the temperature. " +
+				   "The forced report is sent immediately after the next temperature reading, " +
+				   "irrespective of parameter 12. Advised to be 200 unless rapid temperature changes are expected.\n" +
+                   "Available settings:\n" +
+                   "0 - Deactivate temperature sending\n" +
+                   "1-255 - Seconds between sends\n" +
+                   "Default value: 200."
+
+	if (settingEnable) input name: "param12", type: "number", range: "0..255", required: true, defaultValue: "8",
+            title: "Parameter No. 12 - Insensitiveness to temperature changes. This is the maximum " +
+				   "difference between the last reported temperature and the current temperature. " +
+				   "If they differ by more than this then a report is sent.\n" +
+                   "Available settings:\n" +
+                   "0-255 - x/16 = temp diff in C\n" +
+                   "x/80*9 = temp diff in F\n" +
+                   "Default value: 8 (0.5oC)."
+
+	if (settingEnable) input name: "param13", type: "number", range: "0..3", required: true, defaultValue: "0",
+            title: "Parameter No. 13 - Transmitting the alarm or control frame in “broadcast” mode (i.e. to " +
+				   "all devices within range), this information is not repeated by the mesh network." +
+                   "Available settings:\n" +
+                   "0 - IN1 and IN2 broadcast inactive,\n" +
+                   "1 - IN1 broadcast mode active only,\n" +
+                   "2 - IN2 broadcast mode active only,\n" +
+                   "3 - INI and IN2 broadcast mode active.\n" +
+                   "Default value: 0."
+
+	if (settingEnable) input name: "param14", type: "number", range: "0..1", required: true, defaultValue: "0",
+            title: "Parameter No. 14 - Scene activation functionality." +
+                   "Available settings:\n" +
+                   "0 - Deactivated functionality,\n" +
+                   "1 - Activated functionality.\n" +
                    "Default value: 0."
  	} 
  }
@@ -86,6 +212,10 @@ def refresh() {
     if (txtEnable) log.info "uninstalled()"
      removeChildDevices()
  }
+ def configure() {
+	log.debug "configure()"
+    updateCurrentParams()
+}
  
 
  def createChildDevices(){
@@ -163,13 +293,13 @@ def refresh() {
        log.debug "Either no children exist or error finding child devices for some reason: ${err}"
      }
  }
- 
+
  def zwaveEvent(hubitat.zwave.commands.manufacturerspecificv1.ManufacturerSpecificReport cmd) {
   if (logEnable) log.debug("ManufacturerSpecificReport ${cmd.inspect()}")
  }
  
  def zwaveEvent(hubitat.zwave.commands.configurationv1.ConfigurationReport cmd) {
- 	if (txtEnable) log.info("${cmd.inspect()}")
+ 	if (txtEnable) log.info("ConfigurationReport ${cmd.inspect()}")
  }
  
  def createEvent(hubitat.zwave.commands.manufacturerspecificv2.ManufacturerSpecificReport cmd, Map item1) { 
@@ -309,7 +439,29 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  if (logEnable)	log.debug "Catchall reached for cmd: ${cmd.toString()}}"
  if (txtEnable)	return createEvent(descriptionText: "${device.displayName}: ${cmd}")
  }
- 
+
+	def updateCurrentParams() {
+	if (txtEnable) log.info "Sending configuration parameters to device"
+    def cmds = []
+	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
+	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()
+	cmds << zwave.associationV1.associationRemove(groupingIdentifier:1, nodeId:zwaveHubNodeId).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 1, configurationValue:[param1.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 2, configurationValue:[param2.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 3, configurationValue:[param3.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 4, configurationValue:[param4.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 5, configurationValue:[param5.value]).format()
+    cmds << zwave.configurationV1.configurationSet(parameterNumber: 6, configurationValue:[param6.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 7, configurationValue:[param7.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 8, configurationValue:[param8.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 9, configurationValue:[param9.value]).format()
+    cmds << zwave.configurationV1.configurationSet(parameterNumber: 10, configurationValue:[param10.value]).format()
+    cmds << zwave.configurationV1.configurationSet(parameterNumber: 11, configurationValue:[param11.value]).format()
+    cmds << zwave.configurationV1.configurationSet(parameterNumber: 12, configurationValue:[param12.value]).format()
+	cmds << zwave.configurationV1.configurationSet(parameterNumber: 13, configurationValue:[param13.value]).format()
+    cmds << zwave.configurationV1.configurationSet(parameterNumber: 14, configurationValue:[param14.value]).format()
+	delayBetween(cmds, 500)
+}
  
  def listCurrentParams() {
  if (txtEnable) log.info "Listing of current parameter settings of ${device.displayName}"
@@ -391,7 +543,9 @@ def updated() {
 	log.info "updated..."
 	log.warn "debug logging is: ${logEnable == true}"
     log.warn "description logging is: ${txtEnable == true}"
-    if (logEnable) runIn(1800,logsOff)
+	log.warn "Settings is: ${settingEnable == true}"
+	if (logEnable) runIn(1800,logsOff)
+	if (settingEnable) runIn(1800,logsOff)
 
     def cmds = []
 }	

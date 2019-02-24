@@ -208,34 +208,44 @@ def refresh() {
 	 switch(Temps){
 		case 0:
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
- return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
-		delayBetween(cmds, 1500)
+ 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+		return delayBetween(cmds, 1500)
+		 break;
+		 
 		case 1:
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
- return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
-		delayBetween(cmds, 1500)
+ 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
+		return delayBetween(cmds, 1500)
+		 break;
+		 
 		case 2:
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
- return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
-		delayBetween(cmds, 1500)
+ 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
+		return delayBetween(cmds, 1500)
+		 break;
+		 
 		case 3:
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
- return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:5, destinationEndPoint:5, commandClass:49, command:5).format()
-		delayBetween(cmds, 1500)
+ 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:5, destinationEndPoint:5, commandClass:49, command:5).format()
+		return delayBetween(cmds, 1500)
+		 break;
+		 
 		case 4:
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:5, destinationEndPoint:5, commandClass:49, command:5).format()
- return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:6, destinationEndPoint:6, commandClass:49, command:5).format()
-		delayBetween(cmds, 1500)
+ 		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:6, destinationEndPoint:6, commandClass:49, command:5).format()
+		return delayBetween(cmds, 1500)
+		 break;
+		 
 	 }
  }
  
@@ -366,12 +376,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
      	currentstate = "closed"
         motionstate = "active"
  	}
-     createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}")
+     createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}", type: "physical")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: motionstate)
-            childDevice.sendEvent(name: "contact", value: currentstate)
+         	childDevice.sendEvent(name: "motion", value: motionstate, type: "physical")
+            childDevice.sendEvent(name: "contact", value: currentstate, type: "physical")
           if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
@@ -394,13 +404,13 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  		}
      if (txtEnable) log.info "IP${cmd.sourceEndPoint} is ${currentstate}"
          //First update tile on this device
-         sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}")
+         sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
  		//If not null then we have found either IP1 or IP2, hence try to send to the child device aswell
          try {
              def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
-                 childDevice.sendEvent(name: "motion", value: motionstate)
-                 childDevice.sendEvent(name: "contact", value: currentstate)
+                 childDevice.sendEvent(name: "motion", value: motionstate, type: "physical")
+                 childDevice.sendEvent(name: "contact", value: currentstate, type: "physical")
          } catch (e) {
              log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
          }
@@ -424,14 +434,14 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
              
       if (txtEnable) log.info "${tempendpoint} has changed to ${tempprocessed}${units}"
              
-             sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale)
+             sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale(), type: "physical")
              
  			//If not null then we have found either contact1 or contact2, hence try to send to the child
              try {
                  def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-${tempendpoint}"}
                  if (childDevice)
                  	//We found a child device that matches so send it the new temperature
-                     childDevice.sendEvent(name: "temperature", value: tempprocessed)
+                     childDevice.sendEvent(name: "temperature", value: tempprocessed, type: "physical")
              } catch (e) {
              	//Not an error message here as people may not want child temperature devices
          if (txtEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"
@@ -458,7 +468,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  			// temperature
  			def cmdScale = cmd.scale == 1 ? "F" : "C"
  			def tempval = convertTemperatureIfNeeded(cmd.scaledSensorValue, cmdScale, cmd.precision).toDouble().round(1)
-             sendEvent(name: "TP${cmd.sourceEndPoint}", value: tempprocessed, displayed: true, unit: getTemperatureScale)
+             sendEvent(name: "TP${cmd.sourceEndPoint}", value: tempprocessed, displayed: true, unit: getTemperatureScale(), type: "physical")
  			break;
  	}
   if (logEnable) log.debug map
@@ -476,27 +486,27 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  if (txtEnable)	return createEvent(descriptionText: "${device.displayName}: ${cmd}")
  }
 
-	def updateCurrentParams() {
+ def updateCurrentParams() {
 	if (txtEnable) log.info "Sending configuration parameters to ${device.displayName}"
-    def cmds = []
+    def cmds = [] 
 	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV1.associationRemove(groupingIdentifier:1, nodeId:zwaveHubNodeId).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 1, configurationValue:[param1.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 2, configurationValue:[param2.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 3, configurationValue:[param3.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 4, configurationValue:[param4.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 5, configurationValue:[param5.value]).format()
-    cmds << zwave.configurationV1.configurationSet(parameterNumber: 6, configurationValue:[param6.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 7, configurationValue:[param7.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 8, configurationValue:[param8.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 9, configurationValue:[param9.value]).format()
-    cmds << zwave.configurationV1.configurationSet(parameterNumber: 10, configurationValue:[param10.value]).format()
-    cmds << zwave.configurationV1.configurationSet(parameterNumber: 11, configurationValue:[param11.value]).format()
-    cmds << zwave.configurationV1.configurationSet(parameterNumber: 12, configurationValue:[param12.value]).format()
-	cmds << zwave.configurationV1.configurationSet(parameterNumber: 13, configurationValue:[param13.value]).format()
-    cmds << zwave.configurationV1.configurationSet(parameterNumber: 14, configurationValue:[param14.value]).format()
-	delayBetween(cmds, 500)
+	cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param1.value, parameterNumber: 1, size: 2).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param2.value, parameterNumber: 2, size: 2).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param3.value, parameterNumber: 3, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param4.value, parameterNumber: 4, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param5.value, parameterNumber: 5, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param6.value, parameterNumber: 6, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param7.value, parameterNumber: 7, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param8.value, parameterNumber: 8, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param9.value, parameterNumber: 9, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param10.value, parameterNumber: 10, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param11.value, parameterNumber: 11, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param12.value, parameterNumber: 12, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param13.value, parameterNumber: 13, size: 1).format()
+    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param14.value, parameterNumber: 14, size: 1).format()
+    return delayBetween(cmds, 500)
 }
  
  def listCurrentParams() {
@@ -519,56 +529,56 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
     cmds << zwave.configurationV1.configurationGet(parameterNumber: 12).format()
  	cmds << zwave.configurationV1.configurationGet(parameterNumber: 13).format()
  	cmds << zwave.configurationV1.configurationGet(parameterNumber: 14).format()
- 	delayBetween(cmds, 500)
+ 	return delayBetween(cmds, 500)
  }
  
  def open1() {
-     sendEvent(name: "contact1", value: "open", descriptionText: "$device.displayName (1) is opened manually")
+     sendEvent(name: "contact1", value: "open", descriptionText: "$device.displayName (1) is opened manually", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevie)
-         	childDevice.sendEvent(name: "motion", value: "inactive")
-            childDevice.sendEvent(name: "contact", value: "open")
+         	childDevice.sendEvent(name: "motion", value: "inactive", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "open", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def close1() {
-     sendEvent(name: "contact1", value: "closed", descriptionText: "$device.displayName (1) is closed manually")
+     sendEvent(name: "contact1", value: "closed", descriptionText: "$device.displayName (1) is closed manually", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "active")
-            childDevice.sendEvent(name: "contact", value: "closed")
+         	childDevice.sendEvent(name: "motion", value: "active", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "closed", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def open2() {
-     sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName (2) is opened manually")
+     sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName (2) is opened manually", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "inactive")
-            childDevice.sendEvent(name: "contact", value: "open")
+         	childDevice.sendEvent(name: "motion", value: "inactive", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "open", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def close2() {
-     sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName (2) is closed manually")
+     sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName (2) is closed manually", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "active")
- 			childDevice.sendEvent(name: "contact", value: "closed")
+         	childDevice.sendEvent(name: "motion", value: "active", type: "digital")
+ 			childDevice.sendEvent(name: "contact", value: "closed", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
 	 }

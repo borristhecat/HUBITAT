@@ -27,6 +27,7 @@
     command "removeChildDevices"
     command "createChildDevices"
     command "createChildTempDevices"
+	//command "updateCurrentParams"
 	command "listCurrentParams"
     command "open1"
     command "open2"
@@ -39,11 +40,11 @@
  	fingerprint type: "2001", cc: "30 60 85 8E 72 70 86 7A", ccOut: "2B"
  }
  
- main(["temperature1"]) //, "contact1"
- details(["contact1","contact2",
- 		"temp1text", "temperature1", "temp2text", "temperature2",
-         "temp3text", "temperature3", "temp4text", "temperature4",
-         "configure", "report", "createchildren", "createtempchildren", "removechildren"])
+ //main(["temperature1"]) //, "contact1"
+// details(["contact1","contact2",
+ //		"temp1text", "TP1", "temp2text", "TP2",
+ //        "temp3text", "TP3", "temp4text", "TP4",
+ //        "configure", "report", "createchildren", "createtempchildren", "removechildren"])
  
  preferences {
         //standard logging options
@@ -53,7 +54,7 @@
 	 	input name: "Temps", type: "number", range: "0..4", required: true, defaultValue: "0",
             title: "Temperature probes number. \n" +
                    "Default value: 0."
-	// input name: "Info", type: "paragraph", title:"Device Handler by @cjcharles", description: "Parameter Settings:", displayDuringSetup: false
+	 input name: "Info", type: "paragraph", title:"Device Handler by @cjcharles", description: "Parameter Settings:", displayDuringSetup: false
 
     	   
        if (settingEnable) input name: "param1", type: "number", range: "0..65535", required: true, defaultValue: "0",
@@ -138,7 +139,7 @@
 
 	if (settingEnable) input name: "param10", type: "number", range: "1..255", required: true, defaultValue: "20",
             title: "Parameter No. 10 - Interval between successive readings of temperature from all " +
-				   "sensors connected to the device. (A reading does not result in sending to ST)\n" +
+				   "sensors connected to the device. (A reading does not result in sending to HE)\n" +
                    "Available settings:\n" +
                    "1-255 - Seconds between readings\n" +
                    "Default value: 20."
@@ -179,44 +180,65 @@
                    "Default value: 0."
  	} 
  }
-	
+
+def installed() {
+ 	if (txtEnable) log.info "installed()"
+ }
+
+def uninstalled() {
+    if (txtEnable) log.info "uninstalled()"
+     removeChildDevices()
+ }
+def configure() {
+	if (txtEnable) log.info "configure()"
+    updateCurrentParams()
+}
 def logsOff(){
     log.warn "debug logging disabled..."
     device.updateSetting("logEnable",[value:"false",type:"bool"])
 }
-
-def parse(String description) {
-    if (logEnable) log.debug "parse description: ${description}"
-    def cmd = zwave.parse(description,[ 0x26: 1])
-    if (cmd) {zwaveEvent(cmd)}
-    return
+def SettingsOff(){
+    log.warn "Settings disabled..."
+    device.updateSetting("settingEnable",[value:"false",type:"bool"])
 }
 
 def refresh() {
- 	def cmds = []
- 	
-  cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
-  cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
-// 	cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
-// 	cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:4, commandClass:49, command:5).format()
- 	delayBetween(cmds, 1500)
- 	
+	if (txtEnable) log.debug "refresh"
+	def cmds = []
+	 switch(Temps){
+		case 0:
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
+ return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+		delayBetween(cmds, 1500)
+		case 1:
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+ return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
+		delayBetween(cmds, 1500)
+		case 2:
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
+ return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
+		delayBetween(cmds, 1500)
+		case 3:
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
+ return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:5, destinationEndPoint:5, commandClass:49, command:5).format()
+		delayBetween(cmds, 1500)
+		case 4:
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:1, destinationEndPoint:1, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:2, destinationEndPoint:2, commandClass:32, command:2).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:3, destinationEndPoint:3, commandClass:49, command:5).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:4, destinationEndPoint:4, commandClass:49, command:5).format()
+		cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:5, destinationEndPoint:5, commandClass:49, command:5).format()
+ return cmds << zwave.multiChannelV3.multiChannelCmdEncap(sourceEndPoint:6, destinationEndPoint:6, commandClass:49, command:5).format()
+		delayBetween(cmds, 1500)
+	 }
  }
  
- def installed() {
- 	if (txtEnable) log.info "installed()"
- }
- 
- def uninstalled() {
-    if (txtEnable) log.info "uninstalled()"
-     removeChildDevices()
- }
- def configure() {
-	if (txtEnable) log.info "configure()"
-    updateCurrentParams()
-}
- 
-
  def createChildDevices(){
  	if (txtEnable) log.info "Adding Child Devices if not already added"
      for (i in 1..2) {
@@ -285,16 +307,31 @@ def refresh() {
          	try {
              	deleteChildDevice(it.deviceNetworkId)
              } catch (e) {
-          log.debug "Error deleting ${it.deviceNetworkId}, probably locked into a SmartApp: ${e}"
+          log.debug "Error deleting ${it.deviceNetworkId}, probably locked in a App: ${e}"
              }
          }
      } catch (err) {
        log.debug "Either no children exist or error finding child devices for some reason: ${err}"
      }
  }
+/*def parse(String description) {
+	def result = null
+	def cmd = zwave.parse(description, [ 0x60: 3])
+	if (cmd) {
+		result = zwaveEvent(cmd)
+	}
+	if (logEnable) log.debug "parsed '$description' to result: ${result}"
+	return result
+} */
+def parse(String description) {
+    if (logEnable) log.debug "parse description: ${description}"
+    def cmd = zwave.parse(description,[ 0x26: 1])
+    if (cmd) {zwaveEvent(cmd)}
+    return
+}
 
  def zwaveEvent(hubitat.zwave.commands.manufacturerspecificv1.ManufacturerSpecificReport cmd) {
-  if (logEnable) log.debug("ManufacturerSpecificReport ${cmd.inspect()}")
+  if (txtEnable) log.info("ManufacturerSpecificReport ${cmd.inspect()}")
  }
  
  def zwaveEvent(hubitat.zwave.commands.configurationv1.ConfigurationReport cmd) {
@@ -324,10 +361,10 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
      def motionstate
 	if (cmd.value) {
  		currentstate = "open"
-         motionstate = "inactive"
+        motionstate = "inactive"
  	} else {
      	currentstate = "closed"
-         motionstate = "active"
+        motionstate = "active"
  	}
      createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}")
      try {
@@ -335,7 +372,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (childDevice)
          	childDevice.sendEvent(name: "motion", value: motionstate)
             childDevice.sendEvent(name: "contact", value: currentstate)
-          if (txtEnable) log.info "Fibaro is ${currentstate}"
+          if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
@@ -387,7 +424,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
              
       if (txtEnable) log.info "${tempendpoint} has changed to ${tempprocessed}${units}"
              
-             sendEvent(name: tempendpoint, value: tempprocessed, displayed: true, unit: getTemperatureScale)
+             sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale)
              
  			//If not null then we have found either contact1 or contact2, hence try to send to the child
              try {
@@ -397,7 +434,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
                      childDevice.sendEvent(name: "temperature", value: tempprocessed)
              } catch (e) {
              	//Not an error message here as people may not want child temperature devices
-         if (logEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"
+         if (txtEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"
              }
          }
  	}
@@ -421,7 +458,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  			// temperature
  			def cmdScale = cmd.scale == 1 ? "F" : "C"
  			def tempval = convertTemperatureIfNeeded(cmd.scaledSensorValue, cmdScale, cmd.precision).toDouble().round(1)
-             sendEvent(name: "TP1", value: tempval, displayed: false) //unit: getTemperatureScale()
+             sendEvent(name: "TP${cmd.sourceEndPoint}", value: tempprocessed, displayed: true, unit: getTemperatureScale)
  			break;
  	}
   if (logEnable) log.debug map
@@ -435,12 +472,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  def zwaveEvent(hubitat.zwave.Command cmd) {
  	// This will capture any commands not handled by other instances of zwaveEvent
  	// and is recommended for development so you can see every command the device sends
- if (logEnable)	log.debug "Catchall reached for cmd: ${cmd.toString()}}"
+ if (txtEnable)	log.info "Catchall reached for cmd: ${cmd.toString()}}"
  if (txtEnable)	return createEvent(descriptionText: "${device.displayName}: ${cmd}")
  }
 
 	def updateCurrentParams() {
-	if (txtEnable) log.info "Sending configuration parameters to device"
+	if (txtEnable) log.info "Sending configuration parameters to ${device.displayName}"
     def cmds = []
 	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()
@@ -536,15 +573,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
 	 }
  }
-
 //capture preference changes
 def updated() {
-	log.info "updated..."
+	log.info "updated()"
 	log.warn "debug logging is: ${logEnable == true}"
     log.warn "description logging is: ${txtEnable == true}"
 	log.warn "Settings is: ${settingEnable == true}"
 	if (logEnable) runIn(1800,logsOff)
-	if (settingEnable) runIn(1800,logsOff)
-
-    def cmds = []
+	if (settingEnable) runIn(1900,SettingsOff)
 }

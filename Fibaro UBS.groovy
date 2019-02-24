@@ -190,7 +190,7 @@ def uninstalled() {
      removeChildDevices()
  }
 def configure() {
-	if (txtEnable) log.info "configure()"
+	if (txtEnable) log.warn "configure()"
     updateCurrentParams()
 }
 def logsOff(){
@@ -487,7 +487,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  }
 
  def updateCurrentParams() {
-	if (txtEnable) log.info "Sending configuration parameters to ${device.displayName}"
+	if (txtEnable) log.warn "Sending configuration parameters to ${device.displayName}"
     def cmds = [] 
 	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()

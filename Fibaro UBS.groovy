@@ -380,8 +380,8 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: motionstate, type: "physical")
-            childDevice.sendEvent(name: "contact", value: currentstate, type: "physical")
+         	childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${currentstate}", type: "physical")
+                 childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
           if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
@@ -409,8 +409,8 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          try {
              def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
-                 childDevice.sendEvent(name: "motion", value: motionstate, type: "physical")
-                 childDevice.sendEvent(name: "contact", value: currentstate, type: "physical")
+                 childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${currentstate}", type: "physical")
+                 childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
          } catch (e) {
              log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
          }
@@ -533,52 +533,56 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  }
  
  def open1() {
-     sendEvent(name: "contact1", value: "open", descriptionText: "$device.displayName (1) is opened manually", type: "digital")
+     sendEvent(name: "contact1", value: "open", descriptionText: "$device.displayName - IP1 was set to open", type: "digital")
+	 sendEvent(name: "contact1", value: "inactive", descriptionText: "$device.displayName - IP1 was set to inactive", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevie)
-         	childDevice.sendEvent(name: "motion", value: "inactive", type: "digital")
-            childDevice.sendEvent(name: "contact", value: "open", type: "digital")
+         	childDevice.sendEvent(name: "motion", value: "inactive", descriptionText: "$device.displayName - IP1 was set to inactive", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName - IP1 was set to open", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def close1() {
-     sendEvent(name: "contact1", value: "closed", descriptionText: "$device.displayName (1) is closed manually", type: "digital")
+     sendEvent(name: "contact1", value: "closed", descriptionText: "$device.displayName - IP1 was set to closed", type: "digital")
+	 sendEvent(name: "contact1", value: "active", descriptionText: "$device.displayName - IP1 was set to active", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP1"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "active", type: "digital")
-            childDevice.sendEvent(name: "contact", value: "closed", type: "digital")
+         	childDevice.sendEvent(name: "motion", value: "active", descriptionText: "$device.displayName - IP1 was set to active", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName - IP1 was set to closed", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def open2() {
-     sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName (2) is opened manually", type: "digital")
+     sendEvent(name: "contact2", value: "open", descriptionText: "$device.displayName - IP2 was set to open", type: "digital")
+	 sendEvent(name: "contact2", value: "inactive", descriptionText: "$device.displayName - IP2 was set to inactive", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to open/inactive"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "inactive", type: "digital")
-            childDevice.sendEvent(name: "contact", value: "open", type: "digital")
+         	childDevice.sendEvent(name: "motion", value: "inactive", descriptionText: "$device.displayName - IP2 was set to inactive", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName - IP2 was set to open", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
  }
  
  def close2() {
-     sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName (2) is closed manually", type: "digital")
+     sendEvent(name: "contact2", value: "closed", descriptionText: "$device.displayName - IP2 was set to closed", type: "digital")
+	 sendEvent(name: "contact2", value: "active", descriptionText: "$device.displayName - IP2 was set to active", type: "digital")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP2"}
          log.info "Changing child ${childDevice} to closed/active"
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: "active", type: "digital")
- 			childDevice.sendEvent(name: "contact", value: "closed", type: "digital")
+         	childDevice.sendEvent(name: "motion", value: "active", descriptionText: "$device.displayName - IP2 was set to active", type: "digital")
+            childDevice.sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName - IP2 was set to closed", type: "digital")
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
 	 }

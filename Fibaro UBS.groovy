@@ -463,14 +463,14 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
              
       if (txtEnable) log.info "${tempendpoint} has changed to ${tempprocessed}${units}"
              
-             sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale(), type: "physical")
+             sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: units, type: "physical")
              
  			//If not null then we have found either contact1 or contact2, hence try to send to the child
              try {
                  def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-${tempendpoint}"}
                  if (childDevice)
                  	//We found a child device that matches so send it the new temperature
-                     childDevice.sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale(), type: "physical")
+                     childDevice.sendEvent(name: "temperature", value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", unit: units, type: "physical")
              } catch (e) {
              	//Not an error message here as people may not want child temperature devices
          if (txtEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"
@@ -497,7 +497,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  			// temperature
  			def cmdScale = cmd.scale == 1 ? "F" : "C"
  			def tempval = convertTemperatureIfNeeded(cmd.scaledSensorValue, cmdScale, cmd.precision).toDouble().round(1)
-             sendEvent(name: "TP${cmd.sourceEndPoint}", value: tempprocessed, displayed: true, unit: getTemperatureScale(), type: "physical")
+             sendEvent(name: "TP${cmd.sourceEndPoint}", value: tempprocessed, displayed: true, unit: units, type: "physical")
  			break;
  	}
   if (logEnable) log.debug map
@@ -624,4 +624,8 @@ def updated() {
 	log.warn "Settings is: ${settingEnable == true}"
 	if (logEnable) runIn(1800,logsOff)
 	if (settingEnable) runIn(1900,SettingsOff)
+	
+	// Check for any null settings and change them to default values
+    if (IP1Type == null) IP1Type = "Contact"
+    if (IP2Type == null) IP2Type = "Contact"
 }

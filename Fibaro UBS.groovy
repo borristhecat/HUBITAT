@@ -441,7 +441,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
                  def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-${tempendpoint}"}
                  if (childDevice)
                  	//We found a child device that matches so send it the new temperature
-                     childDevice.sendEvent(name: "temperature", value: tempprocessed, type: "physical")
+                     childDevice.sendEvent(name: tempendpoint, value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", displayed: true, unit: getTemperatureScale(), type: "physical")
              } catch (e) {
              	//Not an error message here as people may not want child temperature devices
          if (txtEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"

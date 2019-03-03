@@ -377,11 +377,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
         motionstate = "active"
  	}
      createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}", type: "physical")
+	 createEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "${device.displayName} is ${motionstate}", type: "physical")
      try {
          def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
          if (childDevice)
-         	childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${currentstate}", type: "physical")
-                 childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
+         	childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
+            childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
           if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
@@ -405,11 +406,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
      if (txtEnable) log.info "IP${cmd.sourceEndPoint} is ${currentstate}"
          //First update tile on this device
          sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
+		 sendEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${motionstate}", type: "physical")
  		//If not null then we have found either IP1 or IP2, hence try to send to the child device aswell
          try {
              def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
-                 childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${currentstate}", type: "physical")
+                 childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
                  childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
          } catch (e) {
              log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"

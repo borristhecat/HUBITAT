@@ -36,6 +36,10 @@
      
      attribute "contact1","enum",["open1","close1"]
      attribute "contact2","enum",["open2","close2"]
+	 attribute "TP1","decimal"
+	 attribute "TP2","decimal"
+	 attribute "TP3","decimal"
+	 attribute "TP4","decimal" 
  	
  	fingerprint type: "2001", cc: "30 60 85 8E 72 70 86 7A", ccOut: "2B"
  }
@@ -391,26 +395,45 @@ if (txtEnable)	log.info "zWaveLibraryType:        ${cmd.zWaveLibraryType}"
 if (txtEnable)	log.info "zWaveProtocolVersion:    ${cmd.zWaveProtocolVersion}"
 if (txtEnable)	log.info "zWaveProtocolSubVersion: ${cmd.zWaveProtocolSubVersion}"
  }
- 
- def zwaveEvent(hubitat.zwave.commands.basicv1.BasicSet cmd) {
+// is contact or motion used or both
+/*
+def ContactUsed =
+	if (IP1Type == "Contact" || IP2Type == "Contact") { ContactUsed = true
+	if (txtEnable)	log.info "At least 1 Contact selected"
+	} else { ContactUsed = false
+	if (txtEnable)	log.info "Contact's not selected"	
+			
+		   }
+
+def MotionUsed =
+if (IP1Type == "Motion" || IP2Type == "Motion") { MotionUsed = true
+	if (txtEnable)	log.info "At least 1 Motion selected"
+	} else { MotionUsed = false
+	if (txtEnable)	log.info "Motion not selected"	
+			
+		   }
+
+*/
+def zwaveEvent(hubitat.zwave.commands.basicv1.BasicSet cmd) {
 if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
-     def currentstate
-     def motionstate
+		def currentstate
+		def motionstate
 	if (cmd.value) {
- 		currentstate = "open"
-        motionstate = "inactive"
+		if (IP1Type == "Contact" || IP2Type == "Contact") currentstate = "open"
+        if (IP1Type == "Motion" || IP2Type == "Motion") motionstate = "inactive"
+		
  	} else {
-      currentstate = "closed"
-      motionstate = "active"
+     	if (IP1Type == "Contact" || IP2Type == "Contact") currentstate = "closed"
+     	if (IP1Type == "Motion" || IP2Type == "Motion") motionstate = "active"
  	}
-     createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}", type: "physical")
-	 createEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "${device.displayName} is ${motionstate}", type: "physical")
+     	if (IP1Type == "Contact" || IP2Type == "Contact") createEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "${device.displayName} is ${currentstate}", type: "physical")
+		if (IP1Type == "Motion" || IP2Type == "Motion") createEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "${device.displayName} is ${motionstate}", type: "physical")
      try {
-         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
-         if (childDevice)
-    	 childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
-         childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
-          if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
+        def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
+        if (childDevice)
+    	if (IP1Type == "Motion" || IP2Type == "Motion") childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
+        if (IP1Type == "Contact" || IP2Type == "Contact") childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
+        if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
          log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
      }
@@ -420,26 +443,26 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
   if (logEnable) log.debug "ZWaveEvent V3 ${cmd.inspect()}"
  	def result
  	if (cmd.commandClass == 32) {
-         def currentstate
-         def motionstate
+        def currentstate
+        def motionstate
  		if (cmd.parameter == [0]) {
-          currentstate = "closed"
-          motionstate = "active"
+        if (IP1Type == "Contact" || IP2Type == "Contact") currentstate = "closed"
+        if (IP1Type == "Motion" || IP2Type == "Motion") motionstate = "active"
  		}
  		if (cmd.parameter == [255]) {
-         currentstate = "open"
-         motionstate = "inactive"
+        if (IP1Type == "Contact" || IP2Type == "Contact") currentstate = "open"
+        if (IP1Type == "Motion" || IP2Type == "Motion") motionstate = "inactive"
  		}
-     if (txtEnable) log.info "IP${cmd.sourceEndPoint} is ${currentstate}"
+    	if (txtEnable) log.info "IP${cmd.sourceEndPoint} is ${currentstate}"
          //First update tile on this device
-         sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
-		 sendEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${motionstate}", type: "physical")
+        if (IP1Type == "Contact" || IP2Type == "Contact") sendEvent(name: "contact${cmd.sourceEndPoint}", value: currentstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
+		if (IP1Type == "Motion" || IP2Type == "Motion") sendEvent(name: "contact${cmd.sourceEndPoint}", value: motionstate, descriptionText: "$device.displayName - IP${cmd.sourceEndPoint} is ${motionstate}", type: "physical")
  		//If not null then we have found either IP1 or IP2, hence try to send to the child device aswell
          try {
              def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
-              childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
-              childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
+         if (IP1Type == "Motion" || IP2Type == "Motion") childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
+         if (IP1Type == "Contact" || IP2Type == "Contact") childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
          } catch (e) {
              log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
          }
@@ -623,7 +646,7 @@ def updated() {
     log.warn "description logging is: ${txtEnable == true}"
 	log.warn "Settings is: ${settingEnable == true}"
 	if (logEnable) runIn(1800,logsOff)
-	if (settingEnable) runIn(1900,SettingsOff)
+	if (settingEnable) runIn(2100,SettingsOff)
 	
 	// Check for any null settings and change them to default values
     if (IP1Type == null) IP1Type = "Contact"

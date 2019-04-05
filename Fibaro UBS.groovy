@@ -5,7 +5,7 @@
   *  File Name:			Fibaro UBS - Dual Contact and Temperature Sensor.groovy
   *	Initial Release:	2017-11-07
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
-  *	17/2/2019  rebuilt all logging, altered temperature creation and fixed typo bugs by Borristhecat
+  *	5/4/2019  rebuilt all logging from Hubitat repo, altered temperature creation and fixed typo bugs by Borristhecat
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.
@@ -198,7 +198,7 @@ def uninstalled() {
      removeChildDevices()
  }
 def configure() {
-	if (txtEnable) log.warn "configure()"
+	log.warn "configure()"
     updateCurrentParams()
 }
 def logsOff(){
@@ -211,7 +211,7 @@ def SettingsOff(){
 }
 
 def refresh() {
-	if (txtEnable) log.debug "refresh"
+	log.info "refresh"
 	def cmds = []
 	 switch(Temps){
 		case 0:
@@ -263,7 +263,7 @@ def refresh() {
  }
  
  def createChildDevices(){
- 	if (txtEnable) log.info "Adding Child Devices if not already added"
+ 	log.info "Adding Child Devices if not already added"
      //for (i in 1..2) {
 	 for (i in 1) {
      	try {
@@ -342,7 +342,7 @@ def refresh() {
 	 }  	
  }
  private removeChildDevices() {
- 	if (txtEnable) log.info "Removing Child Devices"
+ 	log.info "Removing Child Devices"
      try {
          getChildDevices()?.each {
          	try {
@@ -526,7 +526,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  }
 
  def updateCurrentParams() {
-	if (txtEnable) log.warn "Sending configuration parameters to ${device.displayName}"
+	log.warn "Sending configuration parameters to ${device.displayName}"
     def cmds = [] 
 	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()
@@ -549,7 +549,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
 }
  
  def listCurrentParams() {
- if (txtEnable) log.info "Listing of current parameter settings of ${device.displayName}"
+    log.info "Listing of current parameter settings of ${device.displayName}"
  def cmds = []
  	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationGet(groupingIdentifier:2).format()
  	cmds << zwave.associationV2.associationGet(groupingIdentifier: 3).format()

@@ -56,7 +56,7 @@
         //standard logging options
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: true
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
-		input name: "settingEnable", type: "bool", title: "Enable setting", defaultValue: true
+		input name: "settingEnable", type: "bool", title: "Enable setting", defaultValue: false
 	 	input name: "IP1Type", type: "enum", title: "Input 1 Type",
                     options: ["Contact", "Motion"], defaultValue: "Contact", displayDuringSetup: false
 		input name: "IP2Type", type: "enum", title: "Input 2 Type",

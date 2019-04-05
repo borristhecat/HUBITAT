@@ -41,7 +41,9 @@
 	 attribute "TP3","decimal"
 	 attribute "TP4","decimal" 
  	
- 	fingerprint type: "2001", cc: "30 60 85 8E 72 70 86 7A", ccOut: "2B"
+		fingerprint deviceId: "1002", inClusters: "0x30,0x60,0x85,0x8E,0x72,0x70,0x86,0x7A", outClusters: "0x2B", mfr: "010F", deviceJoinName: "Fibaro UBS"
+       	
+ 	//fingerprint type: "1281", cc: "30 60 85 8E 72 70 86 7A", ccOut: "2B"
  }
  
  //main(["temperature1"]) //, "contact1"
@@ -54,7 +56,7 @@
         //standard logging options
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: true
         input name: "txtEnable", type: "bool", title: "Enable descriptionText logging", defaultValue: true
-		input name: "settingEnable", type: "bool", title: "Enable setting", defaultValue: false
+		input name: "settingEnable", type: "bool", title: "Enable setting", defaultValue: true
 	 	input name: "IP1Type", type: "enum", title: "Input 1 Type",
                     options: ["Contact", "Motion"], defaultValue: "Contact", displayDuringSetup: false
 		input name: "IP2Type", type: "enum", title: "Input 2 Type",
@@ -531,20 +533,20 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
 	cmds << zwave.multiChannelAssociationV2.multiChannelAssociationSet(groupingIdentifier:2, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV2.associationSet(groupingIdentifier:3, nodeId:[zwaveHubNodeId]).format()
 	cmds << zwave.associationV1.associationRemove(groupingIdentifier:1, nodeId:zwaveHubNodeId).format()
-	cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param1.value, parameterNumber: 1, size: 2).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param2.value, parameterNumber: 2, size: 2).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param3.value, parameterNumber: 3, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param4.value, parameterNumber: 4, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param5.value, parameterNumber: 5, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param6.value, parameterNumber: 6, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param7.value, parameterNumber: 7, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param8.value, parameterNumber: 8, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param9.value, parameterNumber: 9, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param10.value, parameterNumber: 10, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param11.value, parameterNumber: 11, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param12.value, parameterNumber: 12, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param13.value, parameterNumber: 13, size: 1).format()
-    cmds +=  zwave.configurationV1.configurationSet(scaledConfigurationValue: param14.value, parameterNumber: 14, size: 1).format()
+	cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param1 == null ? 0 : param1.value, parameterNumber: 1, size: 2).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param2 == null ? 0 : param2.value, parameterNumber: 2, size: 2).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param3 == null ? 1 : param3.value, parameterNumber: 3, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param4 == null ? 1 : param4.value, parameterNumber: 4, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param5 == null ? 255 : param5.value, parameterNumber: 5, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param6 == null ? 255 : param6.value, parameterNumber: 6, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param7 == null ? 255 : param7.value, parameterNumber: 7, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param8 == null ? 255 : param8.value, parameterNumber: 8, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param9 == null ? 0 : param9.value, parameterNumber: 9, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param10 == null ? 20 : param10.value, parameterNumber: 10, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param11 == null ? 200 : param11.value, parameterNumber: 11, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param12 == null ? 8 : param12.value, parameterNumber: 12, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param13 == null ? 0 : param13.value, parameterNumber: 13, size: 1).format()
+    cmds << zwave.configurationV1.configurationSet(scaledConfigurationValue: param14 == null ? 0 : param14.value, parameterNumber: 14, size: 1).format()
     return delayBetween(cmds, 500)
 }
  

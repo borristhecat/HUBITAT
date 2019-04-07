@@ -7,6 +7,7 @@
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
   *	5/4/2019  rebuilt all logging from Hubitat repo, altered temperature creation and fixed typo bugs by Borristhecat
   *	7/4/2019 dzerovibe fixed V3 Zwave command parameters Thanks
+  * 7/4/2019 cleared up some logging and added default state to install method. Borristhecat
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.
@@ -194,6 +195,8 @@
 
 def installed() {
  	if (txtEnable) log.info "installed()"
+	state.ContactUsed = true
+	state.MotionUsed = false
  }
 
 def uninstalled() {
@@ -345,7 +348,7 @@ def refresh() {
 	 }  	
  }
  private removeChildDevices() {
- 	log.info "Removing Child Devices"
+ 	log.info "Removing Child Devices, if any installed"
      try {
          getChildDevices()?.each {
          	try {
@@ -421,7 +424,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
 
 		if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
-         log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+         log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
      }
  }
  
@@ -454,7 +457,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (state.ContactUsed) childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
 
 		 } catch (e) {
-             log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+             log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
          }
      }
  	else if (cmd.commandClass == 49) {
@@ -486,7 +489,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
                      childDevice.sendEvent(name: "temperature", value: tempprocessed, descriptionText: "$device.displayName - ${tempendpoint} is ${tempprocessed}", unit: units, type: "physical")
              } catch (e) {
              	//Not an error message here as people may not want child temperature devices
-         if (txtEnable) log.debug "Couldn't find child ${tempendpoint} device, probably doesn't exist...? Error: ${e}"
+          log.debug "Couldn't find child ${tempendpoint} device, probably hasn't been created yet? Please click create child Temp devices. Error: ${e}"
              }
          }
  	}
@@ -584,7 +587,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (IP1Type == "Motion") childDevice.sendEvent(name: "motion", value: "inactive", descriptionText: "$device.displayName - IP1 was set to inactive", type: "digital")
          if (IP1Type == "Contact") childDevice.sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName - IP1 was set to open", type: "digital")
      } catch (e) {
-         log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+         log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
      }
  }
  
@@ -598,7 +601,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (IP1Type == "Motion") childDevice.sendEvent(name: "motion", value: "active", descriptionText: "$device.displayName - IP1 was set to active", type: "digital")
          if (IP1Type == "Contact") childDevice.sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName - IP1 was set to closed", type: "digital")
      } catch (e) {
-         log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+         log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
      }
  }
  
@@ -612,7 +615,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (IP2Type == "Motion") childDevice.sendEvent(name: "motion", value: "inactive", descriptionText: "$device.displayName - IP2 was set to inactive", type: "digital")
          if (IP2Type == "Contact") childDevice.sendEvent(name: "contact", value: "open", descriptionText: "$device.displayName - IP2 was set to open", type: "digital")
      } catch (e) {
-         log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+         log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
      }
  }
  
@@ -626,7 +629,7 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          if (IP2Type == "Motion") childDevice.sendEvent(name: "motion", value: "active", descriptionText: "$device.displayName - IP2 was set to active", type: "digital")
          if (IP2Type == "Contact") childDevice.sendEvent(name: "contact", value: "closed", descriptionText: "$device.displayName - IP2 was set to closed", type: "digital")
      } catch (e) {
-         log.error "Couldn't find child device, probably doesn't exist...? Error: ${e}"
+         log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"
 	 }
  }
 //capture preference changes

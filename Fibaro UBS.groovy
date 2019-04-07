@@ -430,12 +430,12 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
  	if (cmd.commandClass == 32) {
        if (state.ContactUsed) def currentstate
        if (state.MotionUsed) def motionstate
- 		if (cmd.parameter == [0]) {
+ 		if (cmd.parameter[0] == 0) {
  		if (state.ContactUsed) currentstate = "closed"
         if (state.MotionUsed) motionstate = "active"
 
 		}
- 		if (cmd.parameter == [255]) {
+ 		if (cmd.parameter[0] == 255) {
  		if (state.ContactUsed) currentstate = "open"
         if (state.MotionUsed) motionstate = "inactive"
 

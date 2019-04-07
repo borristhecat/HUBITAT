@@ -6,6 +6,7 @@
   *	Initial Release:	2017-11-07
   *	Author:				Chris Charles modified by Borristhecat for hubitat and bit more mods by Dean Turner
   *	5/4/2019  rebuilt all logging from Hubitat repo, altered temperature creation and fixed typo bugs by Borristhecat
+  *	7/4/2019 dzerovibe fixed V3 Zwave command parameters Thanks
   *
   *  Copyright 2017 Chris Charles, based on original code by carlos.ir33, modified
   *  by Stuart Buchanan and Paul Crookes. Testing thanks to borristhecat.

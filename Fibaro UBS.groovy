@@ -16,7 +16,7 @@
   */
   
  metadata {
- 	definition (name: "Fibaro UBS", namespace: "cjcharles0", author: "Chris Charles") {
+ 	definition (name: "Fibaro UBS", namespace: "cjcharles0", author: "Chris Charles", importUrl: "https://raw.githubusercontent.com/borristhecat/HUBITAT/master/Fibaro%20UBS.groovy") {
      
     capability "Contact Sensor"
   	capability "Motion Sensor"

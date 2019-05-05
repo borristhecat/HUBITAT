@@ -1,5 +1,5 @@
 metadata {
-    definition (name: "Clean Device",namespace: "BorrisTheCat", author: "Steven Stroud") {
+    definition (name: "Clean Device",namespace: "BorrisTheCat", author: "Steven Stroud", importUrl: "https://raw.githubusercontent.com/borristhecat/HUBITAT/master/Fibaro%20UBS.groovy") {
    
 		//capability "Configuration"
 		command    "WipeState"

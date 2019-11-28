@@ -371,8 +371,9 @@ def refresh() {
 	return result
 } */
 def parse(String description) {
+    if (logEnable) log.trace "description:${description}"
     if (logEnable) log.debug "parse description: ${description}"
-    def cmd = zwave.parse(description,[ 0x26: 1])
+    def cmd = zwave.parse(description,[ 0x20:1, 0x26: 1])
     if (cmd) {zwaveEvent(cmd)}
     return
 }
@@ -419,8 +420,8 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
 	try {
         def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
         if (childDevice)
-         if (state.MotionUsed) childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
-        if (state.ContactUsed) childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
+         if (state.MotionUsed) childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} is ${motionstate}", type: "physical")
+        if (state.ContactUsed) childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
 
 		if (txtEnable) log.info "Fibaro is ${motionstate} and ${currentstate}"
      } catch (e) {
@@ -453,8 +454,8 @@ if (logEnable) log.debug "BasicSet V1 ${cmd.inspect()}"
          try {
              def childDevice = getChildDevices()?.find { it.deviceNetworkId == "${device.deviceNetworkId}-IP${cmd.sourceEndPoint}"}
              if (childDevice)
-         if (state.MotionUsed) childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} has become ${motionstate}", type: "physical")
-         if (state.ContactUsed) childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} has ${currentstate}ed", type: "physical")
+         if (state.MotionUsed) childDevice.sendEvent(name: "motion", value: motionstate, descriptionText: "IP${cmd.sourceEndPoint} is ${motionstate}", type: "physical")
+         if (state.ContactUsed) childDevice.sendEvent(name: "contact", value: currentstate, descriptionText: "IP${cmd.sourceEndPoint} is ${currentstate}", type: "physical")
 
 		 } catch (e) {
              log.error "Couldn't find child device, probably hasn't been created yet? Please click create child devices. Error: ${e}"

@@ -4,6 +4,7 @@ metadata {
 		//capability "Configuration"
 		command    "WipeState"
 		command    "ClearSchedule"
+        command "removeChildDevices"
 
 
 		
@@ -28,3 +29,17 @@ def ClearSchedule(){
 	unschedule()
 	
 }
+ private removeChildDevices() {
+ 	log.info "Removing Child Devices, if any installed"
+     try {
+         getChildDevices()?.each {
+         	try {
+             	deleteChildDevice(it.deviceNetworkId)
+             } catch (e) {
+          log.debug "Error deleting ${it.deviceNetworkId}, probably locked in a App: ${e}"
+             }
+         }
+     } catch (err) {
+       log.debug "Either no children exist or error finding child devices for some reason: ${err}"
+     }
+ }

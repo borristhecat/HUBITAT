@@ -4,7 +4,7 @@ metadata {
 		//capability "Configuration"
 		command    "WipeState"
 		command    "ClearSchedule"
-        command "removeChildDevices"
+                command "removeChildDevices"
 
 
 		
@@ -25,7 +25,7 @@ def updated() {
 } 
 
 def ClearSchedule(){
-	log.warn "Clearing and schedules"
+	log.warn "Clearing schedules"
 	unschedule()
 	
 }

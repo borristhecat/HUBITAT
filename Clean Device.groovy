@@ -1,3 +1,12 @@
+/*
+  *  Device Type Definition File
+  *
+  *  File Name:			Clean Device.groovy
+  *	Author:			Borristhecat copyed some code from Fibaro UBS from ST by Chris Charles
+    ***************************************************************************************
+  */
+
+
 metadata {
     definition (name: "Clean Device",namespace: "BorrisTheCat", author: "Steven Stroud", importUrl: "https://raw.githubusercontent.com/borristhecat/HUBITAT/master/Clean%20Device.groovy") {
    

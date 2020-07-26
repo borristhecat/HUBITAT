@@ -65,7 +65,7 @@ metadata {
 	}
 
 	preferences {
-		input("unitformat", "enum", title: "What unit format do you want to display temperature in SmartThings? (NOTE: Thermostat displays Celsius regardless.)", options: ["Celsius", "Fahrenheit"], defaultValue: "Celsius", required: false, displayDuringSetup: false)
+		input("unitformat", "enum", title: "What unit format do you want to display temperature in Hubitat? (NOTE: Thermostat displays Celsius regardless.)", options: ["Celsius", "Fahrenheit"], defaultValue: "Celsius", required: false, displayDuringSetup: false)
 		//input("lock", "enum", title: "Display Lock?", options: ["No", "Temperature", "Touchscreen"], defaultValue: "No", required: false, displayDuringSetup: false)
 		input("tempcal", "enum", title: "Temperature adjustment.", options: ["+2.5", "+2.0", "+1.5", "+1.0", "+0.5", "0", "-0.5", "-1.0", "-1.5", "-2.0", "-2.5"], defaultValue: "0", required: false, displayDuringSetup: false)
         input name: "logEnable", type: "bool", title: "Enable debug logging", defaultValue: true

@@ -940,7 +940,7 @@ def updated() {
 private fireCommand(List commands) {
 	if (commands != null && commands.size() > 0)
 	{
-		log.trace("Executing commands:" + commands)
+		if (logEnable) log.trace("Executing commands:" + commands)
 		for (String value : commands)
 		{
 			sendHubCommand([value].collect {new hubitat.device.HubAction(it)})
